@@ -15,19 +15,19 @@ LOADING_TEXT = "Earth History Simulation"
 
 # Timeline events (in years ago)
 TIMELINE_EVENTS = [
-    (4_540_000_000, "Formation of Earth"),
-    (3_500_000_000, "Start of Life"),
-    (2_500_000_000, "Oxygenation of Atmosphere"),
-    (2_000_000_000, "Origin of Eukaryotes"),
-    (1_000_000_000, "Multicellularity"),
-    (500_000_000,   "Origin of Vertebrates"),
-    (450_000_000,   "Origin of Plants"),
-    (400_000_000,   "Origin of Land Animals"),
-    (252_000_000,   "Mass Extinction"),
-    (230_000_000,   "Origin of Dinosaurs"),
-    (200_000_000,   "Origin of Mammals"),
-    (66_000_000,    "Dinosaur Extinction"),
-    (300_000,       "Homo s."),
+    (4_540_000_000, "Formation of Earth"), # Dalrymple (2001)
+    (3_500_000_000, "Start of Life"), # Knoll (2015) p. 50
+    (2_450_000_000, "Oxygenation of Atmosphere"), # Knoll(2015) p. 103
+    (2_000_000_000, "Origin of Eukaryotes"), # Eukaryotes and their origins
+    (1_200_000_000, "Multicellularity"), # Knoll (2015) p. 150
+    (850_000_000,   "Origin of Plants"),  # Knauth et al
+    (518_000_000,   "Origin of Vertebrates"), #Yang et al.
+    (423_000_000,   "Origin of Land Animals"), #Garwood 2011
+    (252_000_000,   "Mass Extinction"), # Beauchamp 2012
+    (230_000_000,   "Origin of Dinosaurs"),# Brusatte et al
+    (200_000_000,   "Origin of Mammals"), # Kemp 2017
+    (65_000_000,    "Dinosaur Extinction"), # Brusatte et al
+    (315_000,       "Homo s."), # Hublin et al. 2017
     (0,             "Present")
 ]
 
