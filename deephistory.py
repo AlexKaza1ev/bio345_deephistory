@@ -76,6 +76,8 @@ def draw_progress_bar(stdscr):
     log_start_y = h // 2  # middle third start
     log_height = h // 3 - 2
     log_window = []
+    art_x = w // 2 + 10
+    art_y = log_start_y
 
     total_width = w - 2  # leave margins
     current_year = TOTAL_YEARS
@@ -85,6 +87,103 @@ def draw_progress_bar(stdscr):
 
     label_colors = [3, 4, 5, 6, 7, 8]
     label_color_map = {}
+    ascii_art_map = {
+        "Formation of Earth": [
+            "             _____       ",
+            "          .-' .  ':'-.   ",
+            "        .''::: .:    '.  ",
+            "       /   :::::'      \\",
+            "      ;.    ':' `       ;",
+            "      |       '..       |",
+            "      ; '      ::::.    ;",
+            "       \       '::::   / ",
+            "        '.      :::  .'  ",
+            "          '-.___'_.-'    "
+        ],
+        "Start of Life": [
+            " ~ ~ ~ ~ ~ ~",
+            " ~ o o ~ ~ ~",
+            " ~ ~ ~ ~ ~ ~"
+        ],
+        "Oxygenation of Atmosphere": [
+          " (O2)  (O2)   (O2) ",
+          "(O2) (O2)  (O2)    ",
+          " (O2) (O2)  (O2)   ",
+          " (O2)    (O2)  (O2)"
+        ],
+        "Origin of Eukaryotes": [
+          " [c]   [c] ",
+          "           ",
+          "   [c]     "
+        ],
+        "Multicellularity": [
+          " [c][c][c][c][c]  ",
+          "[c][c][c][c][c][c]",
+          "[c][c][c]         ",
+          "[c][c][c]         ",
+          "[c][c][c][c][c][c]",
+          " [c][c][c][c][c]"
+        ],
+        "Origin of Vertebrates": [
+            "  <>  ",
+            "  <>  ",
+            "  <>  ",
+        ],
+        "Origin of Plants": [
+            "               .--.",
+            "              .'_\\/_'.",
+            "              '. /\\ .'",
+            "               \"||\"",
+            "                 || /\\",
+            "               /\\ ||//\\)",
+            "             (/\\||/",
+            "               ______\\||/_______"
+        ],
+        "Origin of Land Animals": [
+            "  /\\_/\\ ",
+            " ( o.o )",
+            "  > ^ < "
+        ],
+        "Mass Extinction": [
+            "                       .:'",
+            "                   _.::'  ",
+            "        .-;;-.   (_.'     ",
+            "       / ;;;' \\          ",
+            "      |.  `:   |          ",
+            "       \\:   `;/          ",
+            "        '-..-'            "
+        ],
+        "Origin of Dinosaurs": [
+            "                / _)  ",
+            "     _.----._/ /  ",
+            "    /         /   ",
+            " __/ (  | (  |    ",
+            "/__.-'|_|--|_|    "
+        ],
+        "Origin of Mammals": [
+            " (\\__/)  ",
+            " ( •.•)   ",
+            " / >🍪   "
+        ],
+        "Dinosaur Extinction": [
+            "                       .:'",
+            "                   _.::'  ",
+            "        .-;;-.   (_.'     ",
+            "       / ;;;' \\          ",
+            "      |.  `:   |          ",
+            "       \\:   `;/          ",
+            "        '-..-'            "
+        ],
+        "Homo s.": [
+            "  o   ",
+            " /|\\ ",
+            " / \\ " 
+        ],
+        "Present": [
+            "  Simulation Complete!  "
+        ]
+    }
+    current_art = ""
 
     while current_year >= 0:
         draw_legend(stdscr, h, w, years_per_second)
@@ -112,7 +211,7 @@ def draw_progress_bar(stdscr):
                 pass
 
         for i, (year, label) in enumerate(TIMELINE_EVENTS):
-            if year >= current_year and label not in shown_labels:
+            if label not in shown_labels and current_year <= year:
                 label_col = year_to_col(year, TOTAL_YEARS, total_width)
                 if 0 <= label_col < total_width:
                     label_color = label_colors[i % len(label_colors)]
@@ -125,6 +224,7 @@ def draw_progress_bar(stdscr):
                             stdscr.addstr(bar_y + 1, label_col, "|", curses.color_pair(label_color))
                             stdscr.addstr(bar_y + 2, max(0, label_col - len(label)//2), label, curses.color_pair(label_color))
                         shown_labels.add(label)
+                        current_art = ascii_art_map.get(label, "")
                         log_window.append(f"[{int(year):,} yrs ago]: {label}")
                         if len(log_window) > log_height:
                             log_window.pop(0)
@@ -136,6 +236,32 @@ def draw_progress_bar(stdscr):
                 stdscr.addstr(log_start_y + idx, 4, f"- {msg}", curses.color_pair(2))
             except curses.error:
                 pass
+
+                # Draw ASCII art to the right of the log
+        box_width = 48
+        box_height = 20 
+        for i in range(box_height):
+            try:
+                stdscr.move(art_y + i - 1, art_x - 2)
+                stdscr.clrtoeol()
+            except curses.error:
+                pass
+
+        try:
+            stdscr.addstr(art_y - 1, art_x - 2, '+' + '-' * (box_width - 2) + '+', curses.color_pair(1))
+            art_lines = current_art if isinstance(current_art, list) else []
+            vertical_padding = (box_height - 2 - len(art_lines)) // 2
+            for i in range(box_height - 2):
+                if i < vertical_padding or i >= vertical_padding + len(art_lines):
+                    blank = ' ' * (box_width - 2)
+                    stdscr.addstr(art_y + i, art_x - 2, f"|{blank}|", curses.color_pair(1))
+                else:
+                    line = art_lines[i - vertical_padding]
+                    padded = line.center(box_width - 2)
+                    stdscr.addstr(art_y + i, art_x - 2, f"|{padded}|", curses.color_pair(1))
+            stdscr.addstr(art_y + box_height -2, art_x - 2, '+' + '-' * (box_width - 2) + '+', curses.color_pair(1))
+        except curses.error:
+            pass
 
         current_year -= years_per_second
         stdscr.refresh()
@@ -166,7 +292,15 @@ def draw_progress_bar(stdscr):
             pass
 
     stdscr.refresh()
-    time.sleep(10)
+    log_window.append("Press any key to continue")
+    for idx, msg in enumerate(log_window[-log_height:]):
+        try:
+            stdscr.addstr(log_start_y + idx, 4, f"- {msg}", curses.color_pair(2))
+        except curses.error:
+            pass
+    stdscr.refresh()
+    stdscr.nodelay(False)
+    stdscr.getch()
 
 def run(stdscr):
     curses.start_color()
