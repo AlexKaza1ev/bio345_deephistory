@@ -2,7 +2,6 @@
 Creative assignment for BIO345
 Alex Kazaiev
 """
-
 import curses
 import time
 
@@ -11,7 +10,8 @@ TOTAL_YEARS = 4_540_000_000  # Earth's age in years
 INITIAL_YEARS_PER_SECOND = 100000  # Initial speed
 BAR_CHAR = "█"
 TITLE = "BIO345 Activity 1.2 - DEEP HISTORY"
-LOADING_TEXT = "Loading Earth History Simulation"
+AUTHOR = "Alex Kazaiev"
+LOADING_TEXT = "Earth History Simulation"
 
 # Timeline events (in years ago)
 TIMELINE_EVENTS = [
@@ -43,15 +43,26 @@ def draw_legend(stdscr, h, w, speed):
 
 def draw_title_screen(stdscr):
     h, w = stdscr.getmaxyx()
-    y = h // 2
-    x = (w - len(TITLE)) // 2
+    title_y = h // 2 - 1
+    author_y = title_y + 2
+    title_x = (w - len(TITLE)) // 2
+    author_x = (w - len(AUTHOR)) // 2
     stdscr.clear()
     for i in range(len(TITLE)):
         try:
-            stdscr.addstr(y, x + i, TITLE[i], curses.color_pair(2))
+            stdscr.addstr(title_y, title_x + i, TITLE[i], curses.color_pair(2))
         except curses.error:
             pass
         stdscr.refresh()
+        time.sleep(0.05)
+
+    for i in range(len(AUTHOR)):
+        try:
+            stdscr.addstr(author_y, author_x + i, AUTHOR[i], curses.color_pair(2))
+        except curses.error:
+            pass
+        stdscr.refresh()
+        time.sleep(0.05)
         time.sleep(0.05)
     time.sleep(1)
 
@@ -84,8 +95,10 @@ def draw_progress_bar(stdscr):
         except curses.error:
             pass
 
-        # Display current year above the progress bar
+        # Clear and update current year line
         try:
+            stdscr.move(bar_y - 3, 0)
+            stdscr.clrtoeol()
             stdscr.addstr(bar_y - 3, 2, f"Years ago: {int(current_year)}", curses.color_pair(2))
         except curses.error:
             pass
